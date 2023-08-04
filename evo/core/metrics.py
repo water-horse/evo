@@ -331,9 +331,10 @@ class RPE(PE):
                 for E_i in self.E
             ])
         elif self.pose_relation == PoseRelation.full_transformation:
+            print("Changes taking effect")
             # ideal: E_i = 4x4 identity
-            self.error = np.array(
-                [np.linalg.norm(E_i - np.eye(4)) for E_i in self.E])
+            error_list = [np.linalg.norm(E_i - np.eye(4)) for E_i in self.E]
+            self.error = np.array([E_i if E_i > 0.001 else 0 for E_i in error_list])
         elif self.pose_relation == PoseRelation.rotation_angle_rad:
             self.error = np.array(
                 [abs(lie.so3_log_angle(E_i[:3, :3])) for E_i in self.E])
